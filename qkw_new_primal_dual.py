@@ -65,7 +65,8 @@ delta_2 = 1
 delta_dual = 1
 C = 1000
 K_gauss = mu.kernel_matrix(X_train,kernel_fn=mu.gauss_kernel,sigma=0.5)
-print(K_gauss); K_star = K_gauss
+#print(K_gauss); K_star = K_gauss
+K_star = qu.quantum_kernel_matrix(X_train, node, weights = params)
 print('minimum eigenvalue of K_gauss:',mu.eigmin(K_gauss))
 print('minimum eigenvalue of K_quantum:',mu.eigmin(K_star))
 
