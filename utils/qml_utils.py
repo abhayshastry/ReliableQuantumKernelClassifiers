@@ -20,7 +20,7 @@ def qaoa_kernel(x,y,qubits,weights, n_repeats = 1):
 #        return angle_kernel(x,y,qubits)
     P = projector(qubits)
     QAOAEmbedding(x,weights, wires= range(qubits))
-    qml.adjoint(QAOAEmbedding(y,weights, wires = range(qubits)))
+    qml.adjoint(QAOAEmbedding)(y,weights, wires = range(qubits))
     return qml.expval(qml.Hermitian(P,wires = range(qubits)))
     
 def angle_kernel(x1, x2, qubits, weights = None, n_repeats = 1):
@@ -28,14 +28,14 @@ def angle_kernel(x1, x2, qubits, weights = None, n_repeats = 1):
 #    qubits = len(dev_kernel.wires)
     P = projector(qubits)
     AngleEmbedding(x1, wires=range(qubits))
-    qml.adjoint(AngleEmbedding(x2, wires=range(qubits)))
+    qml.adjoint(AngleEmbedding)(x2, wires=range(qubits))
     return qml.expval(qml.Hermitian(P,wires=range(qubits)))
 
 def havlicek_kernel(x,y,qubits,weights = None, n_repeats = 1):
 #    qubits = len(dev_kernel.wires)
     P = projector(qubits)
     IQPEmbedding(x, wires= range(qubits), n_repeats = n_repeats)
-    qml.adjoint(IQPEmbedding(y, wires = range(qubits), n_repeats = n_repeats))
+    qml.adjoint(IQPEmbedding)(y, wires = range(qubits), n_repeats = n_repeats)
     return qml.expval(qml.Hermitian(P,range(qubits)))
 
 def device_wrapper(qubits, quantum_kernel):#Wraps device and kernel evaluation circuit into a qnode
