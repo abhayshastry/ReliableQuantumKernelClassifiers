@@ -48,7 +48,7 @@ def evaluate_kernel(X,y,node,split_state=0,train_size=60,n_repeats=1,params=None
         K_star_test_train=mu.test_train_kernel(X_train,X_test,kernel_fn=mu.gauss_kernel,sigma=sigma)
         end=time.time()
         print("[Gaussian case] Total time to evaluate both train and test-train kernel:",end-start)
-        return K_star, K_star_test_train
+        return K_star, K_star_test_train,y_train,y_test
     start = time.time()
     K_star = qu.quantum_kernel_matrix(X_train,  node, weights = params,n_repeats=n_repeats)
     end = time.time()
