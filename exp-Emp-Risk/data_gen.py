@@ -4,9 +4,9 @@ from  tqdm  import tqdm
 from sklearn.svm   import SVC
 from sklearn.datasets import make_moons
 import sys
-from pathlib import Path
+#from pathlib import Path
 # As PosixPath, probably won't work on Windows
-sys.path.append(Path(__file__).parent)
+#sys.path.append(Path(__file__).parent)
 import time, os, itertools, pickle
 from itertools import product
 from q_kernels import *
