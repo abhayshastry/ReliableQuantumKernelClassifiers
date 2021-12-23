@@ -17,3 +17,12 @@ beta_3,b_3,SV3 = nominal_classifier(K_star,y_train,svm_type="SVC")
 print("beta_1:",beta_1,"b_1",b_1)
 print("beta_2:",beta_2,"b_2",b_2)
 print("beta_3:",beta_3,"b_3",b_3)
+
+#Running Experiment
+shots_array=[10,20,100,500,1000,5000]
+data = run_experiment(0,shots_array,dataset="make_moons")
+#Cross Validation:
+
+#for split_state in range(10):
+#    data =run_experiment(split_state,shots_array,dataset="make_moons")   
+#    #Store in new dictionary
