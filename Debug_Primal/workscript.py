@@ -5,7 +5,7 @@ X,y = get_dataset("make_moons")
 n_qubits= X.shape[1]
 node = create_device("havlicek",n_qubits=n_qubits)
 K_star,K_star_test_train,y_train,y_test = evaluate_kernel(X,y,node)
-K_gauss,K_gauss_test_train = evaluate_kernel(X,y,"gaussian")
+K_gauss,K_gauss_test_train,y_train,y_test= evaluate_kernel(X,y,"gaussian")
 print(mu.eigmin(K_star))
 print(mu.eigmin(K_gauss))
 start = time.time()
