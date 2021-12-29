@@ -317,7 +317,7 @@ def N_from_eta(K, eta, delta):
 #### Primal solver #######
 def kappa(delta):
     return np.sqrt(2*np.log(1/delta))
-
+'''
 def primal_rob_no_dummy(K_star, y_train, delta_1 = 0.1, delta_2 = 0.1,
                         C = 1, shots = 20, circuit_type = 'gates',
                         sv_threshold = 1e-4, numerical_shift = 1e-4,
@@ -355,3 +355,5 @@ def primal_rob_no_dummy(K_star, y_train, delta_1 = 0.1, delta_2 = 0.1,
            if j not in SV:
                betavals[j] == 0.0
     return betavals, v.value, SV
+'''
+

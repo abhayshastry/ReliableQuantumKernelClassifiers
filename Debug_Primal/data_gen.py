@@ -13,7 +13,7 @@ from itertools import product
 from q_kernels import *
 from exp_utils import *
 from qml_utils import *
-#from math_utils import *
+from math_utils import *
 
 
 
@@ -37,22 +37,41 @@ def run_rob(args):
     if C == "optimal":
         C = find_optimal_C(K_train,y_train, C_range = [0.5,1,3,5,10])
 
+
     try:
         ### Here we try to run the robust program with two differnt values of numerical shift
         try:
-            beta, b, SV = primal_rob_no_dummy(K_train, y_train, delta_1 = delta_1, C = C,
+            beta_1, b_1, SV = primal_robust_socp(K_train, y_train, delta_1 = delta_1, C = C,
                                               delta_2 = delta_2/m, shots = shots,  circuit_type = circuit_type)
         except:
-            beta, b, SV = primal_rob_no_dummy(K_train, y_train, delta_1 = delta_1, C = C,
+            beta_1, b_1, SV = primal_robust_socp(K_train, y_train, delta_1 = delta_1, C = C,
                                               delta_2 = delta_2/m, shots = shots,  circuit_type = circuit_type,
                             numerical_shift = 1e-3 )
-        works = True
-        print(f" Optimization works: {works}")
+        works_primal_1 = True
+        print(f" Optimization works primal: {works_primal_1}")
     except:
-        beta = None
-        b = None
-        works = False
-        print(f" Optimization works: {works}")
+        beta_1 = None
+        b_1 = None
+        works_primal_1 = False
+        print(f" Optimization works: {works_primal_1}")
+
+
+    try:
+        ### Here we try to run the robust program with two differnt values of numerical shift
+        try:
+            beta_2, b_2, SV = primal_robust_socp_no_dummy(K_train, y_train, delta_1 = delta_1, C = C,
+                                              delta_2 = delta_2/m, shots = shots,  circuit_type = circuit_type)
+        except:
+            beta_2, b_2, SV = primal_robust_socp_no_dummy(K_train, y_train, delta_1 = delta_1, C = C,
+                                              delta_2 = delta_2/m, shots = shots,  circuit_type = circuit_type,
+                            numerical_shift = 1e-3 )
+        works_primal_2 = True
+        print(f" Optimization works primal no dummy: {works_primal_2}")
+    except:
+        beta_2 = None
+        b_2 = None
+        works_primal_2 = False
+        print(f" Optimization works primal no dummy: {works_primal_2}")
 
     with open(path, 'rb') as f:
         try:
@@ -60,8 +79,9 @@ def run_rob(args):
         except EOFError:
             data = {}
 
-    data[args] = {
-        'works':works, 'beta':beta, 'b':b}
+    data[args] = {'kernel_train':K_train, 'y_train':y_train,
+        'works_primal_1':works_primal_1, 'beta_1':beta_1, 'b_1':b_1,
+        'works_primal_2':works_primal_2, 'beta_2':beta_2, 'b_2':b_2}
 
     with open(path, 'w+b') as f:
         pickle.dump(data, f)
@@ -78,13 +98,13 @@ d_list = ["Two_Moons" , "Checkerboard","SymDonuts"]
 
 
 indices = [
-  #  ('kernel, dataset', [a for a in product(k_list[:4],["Generated"])] + [a for a in product(k_list, d_list)]),
-    ('kernel dataset',  [("Havliscek","Generated"), ("Havliscek,2","Checkerboard")]),
+    ('kernel, dataset', [a for a in product(k_list[:4],["Generated"])] + [a for a in product(k_list, d_list)]),
+  #  ('kernel dataset',  [("Havliscek","Generated"), ("Havliscek,2","Checkerboard")]),
     ('m', [60,120]),
     ("delta_1", [ 0.01, 0.1 ]),
     ("delta_2", [ 0.01, 0.1]),
     ("C", ["optimal"]),
-    ("shots", [20,100, 300, 600, 1200, 1800, 2500, 3000]),
+    ("shots", [20,100,1200]),
     ("method", ["gates"]),
     ("train", ["exact"]),
     ("nTrials", [10])
