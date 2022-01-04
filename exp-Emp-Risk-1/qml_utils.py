@@ -88,7 +88,7 @@ def quantum_generate_dataset(m, dim, M, quantum_node, weights = None, n_repeats 
         if abs(f) > b:
             y[counter] = np.sign(f)
 
-            if np.abs(np.mean(y)) < balance + 0.1:
+            if np.abs(np.mean(y)) < balance + 0.01:
                 counter += 1
                 X.append(rand_x[:])
     

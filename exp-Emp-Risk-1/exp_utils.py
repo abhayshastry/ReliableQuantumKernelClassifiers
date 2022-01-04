@@ -232,7 +232,7 @@ def return_kernel(key,m, n_qubits = 5, seed = 0):
         M = np.random.rand(2**n_qubits, 2**n_qubits) - 0.5
         assert n_qubits > 1
         Z_gate = np.asarray([[1,0],[0,-1]])
-        mat_list = [Z_list]*2
+        mat_list = [Z_gate]*2
         parity = np.kron(*mat_list)
         if n_qubits > 2:
             for _ in range(n_qubits-2):
