@@ -4,6 +4,7 @@ import pandas as pd
 from  tqdm  import tqdm
 from sklearn.svm  import SVC
 from sklearn.datasets import make_moons
+from scipy.stats import unitary_group
 import sys
 from pathlib import Path
 from scipy.linalg import svdvals
@@ -82,8 +83,22 @@ def N_star(K_train, y_train,  K_test_train, y_test, R_star,
 #    return N_list, np.asarray(high_prob_remp)-R_star
     return root_by_lin_interpolation(N_list, np.asarray(high_prob_remp)-R_star)
 
+"""
 def N_star_from_df(df, R_star,
            N_list =  np.arange(5,500, 20) ,  N_trials = 20, delta = 0.1  ):
+
+    high_prob_remp = []
+    for N in N_list:
+        high_prob_remp.append( high_prob_upper( df.loc[N,:]["Emp_risk"], delta ) )
+
+    return root_by_lin_interpolation(N_list, np.asarray(high_prob_remp)-R_star)
+"""
+
+def N_star_from_df(df, R_star, y_train,  N_list = np.linspace(2,4000, 15, dtype=int), N_trials = 20, delta =0.1 ):
+    emp_risk = []
+    for x  in df.index:
+         emp_risk.append( np.mean (df.loc[x]["y_pred"]*y_train < 0 ))
+    df["Emp_risk"] = emp_risk
 
     high_prob_remp = []
     for N in N_list:
@@ -215,7 +230,16 @@ def return_kernel(key,m, n_qubits = 5, seed = 0):
         print(f"Generating data:{key}")
         node = device_wrapper(n_qubits, havlicek_features)
         M = np.random.rand(2**n_qubits, 2**n_qubits) - 0.5
-        M = M + M.T
+        assert n_qubits > 1
+        Z_gate = np.asarray([[1,0],[0,-1]])
+        mat_list = [Z_list]*2
+        parity = np.kron(*mat_list)
+        if n_qubits > 2:
+            for _ in range(n_qubits-2):
+                parity =  np.kron(parity, Z_gate)
+
+        V =  unitary_group.rvs(2**n_qubits, random_state = seed)
+        M = np.conj(V.T)@ parity @ V
         X,y = quantum_generate_dataset(m, n_qubits, M, node)
         node = device_wrapper(n_qubits, havlicek_kernel)
         K= quantum_kernel_matrix(X, node, weights = None)
@@ -303,7 +327,7 @@ def eta_from_N(K, n_meas ,delta, N_trials = 100, test = "swap"):
     return upper
 
 
-def N_from_eta(K, eta, delta = 0.1, N_trials = 100, N_list = np.linspace(2,10000,15)):
+def N_from_eta(K, eta, delta = 0.1, N_trials = 20, N_list = np.linspace(2,5000,10)):
     eta_list = []
     for N in N_list:
         eta_list.append( eta_from_N(K,N, delta, N_trials = N_trials))
