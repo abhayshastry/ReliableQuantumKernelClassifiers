@@ -1,0 +1,17 @@
+  /home/abhijith/Dropbox/QML_expts/Final_experiments/ReliableQuantumKernelClassifiers/exp-Emp-Risk-1:
+  total used in directory 348 available 52057140
+  drwxrwxr-x 4 abhijith abhijith   4096 Dec 30 11:23   .
+  drwxrwxr-x 8 abhijith abhijith   4096 Dec 30 11:21   ..
+  drwxrwxr-x 2 abhijith abhijith   4096 Dec  8 09:23   .ipynb_checkpoints
+  -rw-rw-r-- 1 abhijith abhijith   5794 Dec 11 11:26   data_gen.py
+  -rw-rw-r-- 1 abhijith abhijith   2724 Dec 22 02:27   data_gen_random_train.py
+  -rw-rw-r-- 1 abhijith abhijith  11242 Dec 22 02:08   exp_utils.py
+  -rw-rw-r-- 1 abhijith abhijith   2732 Dec 15 07:43   generate_datasets.py
+  -rw-rw-r-- 1 abhijith abhijith   3386 Dec  8 09:23   ksvm.py
+  -rw-rw-r-- 1 abhijith abhijith  13663 Dec  8 09:23   math_utils.py
+  -rw-rw-r-- 1 abhijith abhijith   4065 Dec  8 09:23   qml_utils.py
+  -rw-rw-r-- 1 abhijith abhijith   3124 Dec  8 09:23   q_kernels.py
+  -rw-rw-r-- 1 abhijith abhijith    143 Dec 30 11:23   readme.txt
+  -rw-rw-r-- 1 abhijith abhijith   4965 Dec 11 12:02   tester.py
+  -rw-rw-r-- 1 abhijith abhijith 269283 Dec 22 08:40   visualization.ipynb
+  drwxrwxr-x 2 abhijith abhijith   4096 Dec 22 02:08   __pycache__

@@ -14,8 +14,28 @@ def optimize_width_depth_train_err(kernel_key, dataset_key,C, m, width_range=[1,
             clf =  SVC(kernel='precomputed', C = C)
             clf.fit(K_train, y_train)
             f_pred_exact =  np.sign(clf.decision_function(K_train))
-            train_err = 0.5*np.mean(f_pred_exact - y_train)
+            train_err = 0.5*np.mean(np.abs(f_pred_exact - y_train))
+
+def optimize_width_depth_test_err(kernel_key, dataset_key,C, m, m_test, width_range=[1,2,3], depth_range = [1,2,3,4,5,6,7] ):
+    np.random.seed(0) ##For repeatability
+    for w in width_range:
+        for d  in depth_range:
+            key = kernel_key + "," + str(w) + "," + str(d)
+            print(key)
+            K, y = return_kernel((key,dataset_key), m + m_test )
+            K_train = K[:m, :m]
+            y_train = y[:m]
+            K_test_train =  K[m:, :m]
+            y_test = y[m:]
+            clf =  SVC(kernel='precomputed', C = C)
+            clf.fit(K_train, y_train)
+            f_pred_train =  np.sign(clf.decision_function(K_train))
+            train_err = 0.5*np.mean(np.abs(f_pred_train - y_train))
+            f_pred_test =  np.sign(clf.decision_function(K_test_train))
+            test_err = 0.5*np.mean(np.abs(f_pred_test - y_test))
+
             print(f"{key}-TrainError ={train_err} ")
+            print(f"{key}-TestError ={test_err} ")
 
 def optimize_width_depth_margin_err(kernel_key, dataset_key,C, m, width_range=[1,2,3], depth_range = [1,2,3,4,5,6,7] ):
     np.random.seed(0) ##For repeatability
@@ -31,10 +51,10 @@ def optimize_width_depth_margin_err(kernel_key, dataset_key,C, m, width_range=[1
             margin_err =  np.mean(y_train*f_pred_exact < 1.0 - 1e-13)
             print(f"{key}-MarginError = {margin_err} ")
 
-
+"""
 def optimize_width_depth_cv(kernel_key, dataset_key,C, m, cv_fraction=0.2, N_trials = 10, width_range=[1,2,3], depth_range = [1,2,3,4,5,6,7] ):
     np.random.seed(0) ##For repeatability
-    raise:
+    
     
     m_test = np.ceil(cv_fraction*m)
     m_train = m - m_test
@@ -53,3 +73,4 @@ def optimize_width_depth_cv(kernel_key, dataset_key,C, m, cv_fraction=0.2, N_tri
                 f_pred_exact =  np.sign(clf.decision_function(K_train))
                 train_err = 0.5*np.mean(f_pred_exact - y_train)
                 print(f"{key}-TrainError = {train_err} ")
+"""
