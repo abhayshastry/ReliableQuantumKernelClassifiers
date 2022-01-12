@@ -5,6 +5,7 @@ from  tqdm  import tqdm
 from sklearn.svm  import SVC
 from sklearn.datasets import make_moons
 from scipy.stats import unitary_group
+from matplotlib.pyplot import scatter,show
 
 
 from scipy.linalg import svdvals
@@ -22,6 +23,19 @@ def reliability( y_true,  Y_rand_tensor, eta = 1):
     y_err = np.einsum("ij->j", y_err)
     y_err = y_err <= (1 - eta)*N_train
     return np.sum(y_err)/m
+
+def scatter_plotter(X,y):
+    ix1 = np.where(abs(y-1) < 1e-5 )[0]
+    ix2 = np.where( abs(y  + 1) < 1e-5)[0]
+    X0 = np.asarray([x[0] for x in X])
+    X1 = np.asarray([x[1] for x in X])
+   #  return X0, X1, ix1
+    scatter(X0[ix1], X1[ix1], marker = "P")
+    scatter(X0[ix2], X1[ix2], marker = "o")
+    show()
+    return 
+
+
 
 
 def checkerboard(samples, spacing= 0.1, L= 4,spread  =0.01):
