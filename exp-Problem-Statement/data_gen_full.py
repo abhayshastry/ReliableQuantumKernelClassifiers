@@ -85,11 +85,11 @@ def run(args):
     return
 
 
-kd_list = [("QAOA", "Checkerboard" ), ("Havliscek,2", "Two_Moons" ), ("Circ-Hubr,2", "Two_Moons" ),
- ("Circ-Hubr", "Generated" ), ("Havliscek,2", "Checkerboard" ),  ("QAOA,2", "Two_Moons" ),  ("Angle,2", "Two_Moons" ), ("Angle", "Generated" ),  ("QAOA" ,"Generated" ), ("Havliscek", "Generated" ),
-           ("QAOA,2", "SymDonuts" ), ("QAOA", "Two_Moons" ),  ("Circ-Hubr,2", "Checkerboard" ), ("QAOA,2", "Checkerboard" )]
+#kd_list = [("QAOA", "Checkerboard" ), ("Havliscek,2", "Two_Moons" ), ("Circ-Hubr,2", "Two_Moons" ),
+# ("Circ-Hubr", "Generated" ), ("Havliscek,2", "Checkerboard" ),  ("QAOA,2", "Two_Moons" ),  ("Angle,2", "Two_Moons" ), ("Angle", "Generated" ),  ("QAOA" ,"Generated" ), ("Havliscek", "Generated" ),
+#           ("QAOA,2", "SymDonuts" ), ("QAOA", "Two_Moons" ),  ("Circ-Hubr,2", "Checkerboard" ), ("QAOA,2", "Checkerboard" )]
 
-#kd_list =  kd_list[:4]
+#kd_list =  
 
 
 

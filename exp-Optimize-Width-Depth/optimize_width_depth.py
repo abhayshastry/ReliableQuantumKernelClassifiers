@@ -51,11 +51,11 @@ def optimize_width_depth_margin_err(kernel_key, dataset_key,C, m, width_range=[1
             margin_err =  np.mean(y_train*f_pred_exact < 1.0 - 1e-13)
             print(f"{key}-MarginError = {margin_err} ")
 
+optimize_width_depth_test_err("QAOA", "SymDonuts",1, 120, 120)
+
 """
 def optimize_width_depth_cv(kernel_key, dataset_key,C, m, cv_fraction=0.2, N_trials = 10, width_range=[1,2,3], depth_range = [1,2,3,4,5,6,7] ):
     np.random.seed(0) ##For repeatability
-    
-    
     m_test = np.ceil(cv_fraction*m)
     m_train = m - m_test
 

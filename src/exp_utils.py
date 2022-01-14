@@ -6,10 +6,7 @@ from sklearn.svm  import SVC
 from sklearn.datasets import make_moons
 from scipy.stats import unitary_group
 from matplotlib.pyplot import scatter,show
-
-
 from scipy.linalg import svdvals
-# As PosixPath, probably won't work on Windows
 from q_kernels import *
 from qml_utils import *
 from ksvm import *
@@ -117,6 +114,8 @@ def N_star_from_df(df, R_star,
 
     return root_by_lin_interpolation(N_list, np.asarray(high_prob_remp)-R_star)
 """
+
+
 
 def N_star_from_df(df, R_star, y_train,  N_list = np.linspace(2,4000, 15, dtype=int), N_trials = 20, delta =0.1 ):
     emp_risk = []
