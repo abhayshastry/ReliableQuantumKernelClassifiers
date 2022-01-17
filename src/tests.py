@@ -1,8 +1,7 @@
 import numpy as np
 from exp_utils import *
 
-
-def  stochastic_root_finding(f, x_range = (10, 1000), N_queries = 20, N_trials = 1000, delta = 0.1, domain_f = "Int"):
+def stochastic_root_finding(f, x_range = (10, 1000), N_queries = 20, N_trials = 1000, delta = 0.1, domain_f = "Int"):
     """
     Find smallest x such that Pr(f(x) <  0) > 1 - delta
     """

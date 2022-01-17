@@ -211,7 +211,7 @@ def  find_optimal_C (K, y , C_range = "default", cross_val_frac = 0.2, N_trials 
     m = len(y)
     m_test = np.int(np.ceil(cross_val_frac*m))
     m_train = m - m_test
-    if C_range == "default":
+    if isinstance(C_range, str) and  C_range == "default":
         C_range = np.linspace(1/m , 10 ,50)
     acc_vals = np.zeros(len(C_range))
 
@@ -231,7 +231,9 @@ def  find_optimal_C (K, y , C_range = "default", cross_val_frac = 0.2, N_trials 
             Z = clf.decision_function(K_test_train)
             acc_vals[ii] += np.mean(Z*y_test > 0)
 
-    return C_range[np.argmax(acc_vals)]
+    opt_C =  C_range[np.argmax(acc_vals)]
+    print(f"Optimal C val : {opt_C}")
+    return opt_C
 
 def return_kernel(key,m, n_qubits = 5, seed = 0):
     np.random.seed(seed)
