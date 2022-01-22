@@ -60,7 +60,7 @@ def stochastic_root_finding(f, x_range = (1, 4000), N_queries = 40, N_trials = 1
 def find_N_star(args, N_trials = 100,  delta = 0.1):
     key, m, C = args
     print(f'[JOB {args}]', flush=True)
-    K_train, y_train = return_kernel(key, m )
+    K_train, y_train = return_kernel(key, m, bal_tol = 0.02 )
     if C == "optimal":
         C = find_optimal_C(K_train,y_train, C_range = np.linspace(1/m, 200, 50))
 
@@ -83,7 +83,7 @@ def find_N_star(args, N_trials = 100,  delta = 0.1):
 def run(args):
     key, m, C = args
     print(f'[JOB {args}]', flush=True)
-    K_train, y_train = return_kernel(key, m )
+    K_train, y_train = return_kernel(key, m, bal_tol = 0.02 )
 
     if C == "optimal":
         C = find_optimal_C(K_train,y_train, C_range = np.linspace(0.1, 10, 11))
@@ -118,10 +118,11 @@ kd_list = [("QAOA", "Checkerboard" ), ("Havliscek,2", "Two_Moons" ), ("Circ-Hubr
 
 
 k_list = ["Havliscek", "QAOA", "Angle", "QAOA,2", "Havliscek,2", "Angle,2"]
-d_list = ["Two_Moons" , "Checkerboard", "SymDonuts"]
+#d_list = ["Two_Moons" , "Checkerboard", "SymDonuts"]
+d_list = ["Gen,2", "Gen,5"]
 
 indices = [
-    ('kernel, dataset', [a for a in product(k_list, d_list)]  ),
+    ('kernel, dataset', [a for a in product(k_list[:3], d_list)]  ),
     ('m', [60, 120, 300]),
     ("C", ["optimal", 0.1, 1 ] ) ##Add optimal C as well
 ]

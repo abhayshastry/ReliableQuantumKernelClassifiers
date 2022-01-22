@@ -72,9 +72,9 @@ def quantum_test_train_kernel(X_test, X_train, quantum_node, weights = None, n_r
     return TestTrainKernel
 #end of quantum
 
-def quantum_generate_dataset(m, dim, M, quantum_node, weights = None, n_repeats = 1, balance = 0.0, b = 0.3,  C = 1  ,scale = 100):
+def quantum_generate_dataset(m, dim, M, quantum_node, weights = None, n_repeats = 1, balance = 0.0, b = 0.3,  C = 1  ,scale = 100, bal_tol = 0.01):
     """
-    M is an observable in feature space 
+    M is an observable in feature space
 
     """
     n_qubits = len(quantum_node.device.wires)
@@ -88,7 +88,7 @@ def quantum_generate_dataset(m, dim, M, quantum_node, weights = None, n_repeats 
         if abs(f) > b:
             y[counter] = np.sign(f)
 
-            if np.abs(np.mean(y)) < balance + 0.01:
+            if np.abs(np.mean(y)) < balance + bal_tol:
                 counter += 1
                 X.append(rand_x[:])
     

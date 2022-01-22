@@ -235,8 +235,14 @@ def  find_optimal_C (K, y , C_range = "default", cross_val_frac = 0.2, N_trials 
     print(f"Optimal C val : {opt_C}")
     return opt_C
 
-def return_kernel(key,m, n_qubits = 5, seed = 0):
+def return_kernel(key,m, n_qubits = 5, seed = 0, bal_tol = 0.01):
     np.random.seed(seed)
+    a = key[1].split(",")
+    if len(a) == 2:
+        assert a[0] == "Gen", "Use Gen,n_qubits to generate datasets"
+        n_qubits = int(a[1])
+        key = (key[0], "Generated")
+
     if key == ("Circ-Hubr", "Generated"):
         print(f"Generating data:{key}")
         qc, params = parametric_quantum_kernel_1(n_qubits)
@@ -265,7 +271,7 @@ def return_kernel(key,m, n_qubits = 5, seed = 0):
 
         V =  unitary_group.rvs(2**n_qubits, random_state = seed)
         M = np.conj(V.T)@ parity @ V
-        X,y = quantum_generate_dataset(m, n_qubits, M, node)
+        X,y = quantum_generate_dataset(m, n_qubits, M, node, bal_tol= bal_tol)
         node = device_wrapper(n_qubits, havlicek_kernel)
         K= quantum_kernel_matrix(X, node, weights = None)
 
@@ -274,7 +280,7 @@ def return_kernel(key,m, n_qubits = 5, seed = 0):
         node = device_wrapper(n_qubits, angle_features)
         M = np.random.rand(2**n_qubits, 2**n_qubits) - 0.5
         M = M + M.T
-        X,y = quantum_generate_dataset(m, n_qubits, M, node)
+        X,y = quantum_generate_dataset(m, n_qubits, M, node, bal_tol = bal_tol)
         node = device_wrapper(n_qubits, angle_kernel)
         K= quantum_kernel_matrix(X, node, weights = None)
 
@@ -284,9 +290,14 @@ def return_kernel(key,m, n_qubits = 5, seed = 0):
         M = np.random.rand(2**n_qubits, 2**n_qubits) - 0.5
         M = M + M.T
         L = 2
-        weights = np.random.rand(L, 2*n_qubits)
+        wL = 2*n_qubits
+        if  n_qubits == 1:
+            wL = 1
+        if  n_qubits == 2:
+            wL = 3
+        weights = np.random.rand(L, wL)
 
-        X,y = quantum_generate_dataset(m, n_qubits, M, node, weights = weights)
+        X,y = quantum_generate_dataset(m, n_qubits, M, node, bal_tol = bal_tol, weights = weights)
         node = device_wrapper(n_qubits, qaoa_kernel)
         K= quantum_kernel_matrix(X, node, weights = weights)
 
