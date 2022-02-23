@@ -3,7 +3,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from  tqdm  import tqdm
 from sklearn.svm  import SVC
-from sklearn.datasets import make_moons
+from sklearn.datasets import make_moons, make_circles
 from scipy.stats import unitary_group
 from matplotlib.pyplot import scatter,show
 from scipy.linalg import svdvals
@@ -30,7 +30,7 @@ def scatter_plotter(X,y):
     scatter(X0[ix1], X1[ix1], marker = "P")
     scatter(X0[ix2], X1[ix2], marker = "o")
     show()
-    return 
+    return
 
 
 
@@ -172,8 +172,7 @@ def N_vs_y_pred_dict (K_train, y_train,  N_list, K_test_train, y_test, C =1, N_t
 
 def high_prob_upper(List, delta):
     """
-    Given a list this returns the element in that list such that atmost delta fraction of the
-    elements of the list is greater than this element.
+    Given a list this returns the element in that list such that atmost delta fraction of the  elements of the list is greater than this element.
     """
     A =  np.sort(List)
     ind =  int(np.floor(delta*len(A)))
@@ -268,7 +267,7 @@ def return_kernel(key,m, n_qubits = 5, seed = 0, bal_tol = 0.01):
         if n_qubits > 2:
             for _ in range(n_qubits-2):
                 parity =  np.kron(parity, Z_gate)
-
+                
         V =  unitary_group.rvs(2**n_qubits, random_state = seed)
         M = np.conj(V.T)@ parity @ V
         X,y = quantum_generate_dataset(m, n_qubits, M, node, bal_tol= bal_tol)
@@ -301,14 +300,19 @@ def return_kernel(key,m, n_qubits = 5, seed = 0, bal_tol = 0.01):
         node = device_wrapper(n_qubits, qaoa_kernel)
         K= quantum_kernel_matrix(X, node, weights = weights)
 
-
-    if (key[1] == "Two_Moons") or (key[1] == "Checkerboard") or (key[1])=="SymDonuts":
+    sk_learn_datasets = ["Two_Moons", "Checkerboard", "SymDonuts", "Circles" ]
+    if key[1] in sk_learn_datasets:
         if key[1] == "Two_Moons":
             X, y =  make_moons(m)
             X = [X[i,:] for i in range(m)]
             y = 2*y - 1
         if key[1] == "Checkerboard":
             X,y = checkerboard(m)
+            X = [X[i,:] for i in range(m)]
+            y = 2*y - 1
+
+        if key[1] == "Circles":
+            X, y =  make_circles(m)
             X = [X[i,:] for i in range(m)]
             y = 2*y - 1
 

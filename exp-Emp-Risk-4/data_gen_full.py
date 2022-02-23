@@ -3,9 +3,6 @@ import pandas as pd
 from  tqdm  import tqdm
 from sklearn.svm   import SVC
 import sys
-#from pathlib import Path
-# As PosixPath, probably won't work on Windows
-#sys.path.append(Path(__file__).parent)
 import time, os, itertools, pickle, sys
 srcpath = os.path.abspath(os.path.join(os.path.abspath(''),  '..',  'src'))
 sys.path.append(srcpath)
@@ -16,7 +13,7 @@ from qml_utils import *
 from math_utils import *
 
 
-def stochastic_root_finding(f, x_range = (1, 4000), N_queries = 40, N_trials = 100, delta = 0.1, domain_f = "Int"):
+def stochastic_root_finding(f, x_range = (1, 4000), N_queries = 40, N_trials = 100, delta = 0.05, domain_f = "Int"):
     """
     Find smallest x such that Pr(f(x) <  0) > 1 - delta
     """
@@ -58,7 +55,7 @@ def stochastic_root_finding(f, x_range = (1, 4000), N_queries = 40, N_trials = 1
     fr = min(A[2], A[3])
     return xr, fr
 
-def find_N_star(args, N_trials = 100,  delta = 0.1, bal_tol = 0.01):
+def find_N_star(args, N_trials = 100,  delta = 0.05, bal_tol = 0.01):
     key, m, C = args
     print(f'[JOB {args}]', flush=True)
     K_train, y_train = return_kernel(key, m, bal_tol = bal_tol)
@@ -69,7 +66,6 @@ def find_N_star(args, N_trials = 100,  delta = 0.1, bal_tol = 0.01):
     clf.fit(K_train, y_train)
     f_pred_exact =  clf.decision_function(K_train).flatten()
     margin_err = 1 - np.mean(y_train*f_pred_exact > 1.0  )
-    print(f"margin_err = {margin_err}")
 
     def fn1(N):
         K_N =  kernel_estimate(K_train, N)
@@ -85,7 +81,6 @@ def run(args):
     print(f'[JOB {args}]', flush=True)
     bal_tol = max( 2/m , 0.01)
     K_train, y_train = return_kernel(key, m, bal_tol = bal_tol )
-    print("Sanity Check")
 
     if C == "optimal":
         C = find_optimal_C(K_train,y_train, C_range = np.linspace(0.1, 10, 11))
@@ -93,8 +88,13 @@ def run(args):
     clf =  SVC(kernel='precomputed', C = C)
     clf.fit(K_train, y_train)
     m_sv =sum(clf.n_support_)
-    f_pred_exact =  clf.decision_function(K_train)
-    A = find_N_star(args, bal_tol = bal_tol)
+    f_pred_exact =  clf.decision_function(K_train).flatten()
+    margin_err = 1 - np.mean(y_train*f_pred_exact > 1.0  )
+    print(f"margin_err = {margin_err}")
+    if margin_err < 0.4:
+        A = find_N_star(args, bal_tol = bal_tol)
+    else:
+        A = (None, None)
 
     with open(path, 'rb') as f:
         try:
@@ -120,13 +120,14 @@ kd_list = [("QAOA", "Checkerboard" ), ("Havliscek,2", "Two_Moons" ), ("Circ-Hubr
 
 
 k_list = ["Havliscek", "QAOA", "Angle", "QAOA,2", "Havliscek,2", "Angle,2"]
-#d_list = ["Two_Moons" , "Checkerboard", "SymDonuts"]
-d_list = ["Gen,2", "Gen,5"]
+#k_list = ["Havliscek" ]
+d_list = ["Two_Moons" , "Checkerboard", "SymDonuts", "Circles"]
+#d_list = ["Gen,2", "Gen,5"]
 
 indices = [
-    ('kernel, dataset', [a for a in product(k_list[:3], d_list)]  ),
-    ('m', [40, 60, 120, 300]),
-    ("C", [ 0.1, 1 ] ) ##Add optimal C as well
+    ('kernel, dataset', [a for a in product(k_list, d_list)]  ),
+    ('m', [40, 60, 120]),
+    ("C", [ 1, 5 ] ) ##Add optimal C as well
 ]
 
 #column_names = ['N_list', 'y_pred_list', 'y_train']
@@ -155,7 +156,7 @@ else:
 
 print(f'{len(todos)} of {len(args)} data entries are missing. Starting to run ...')
 
-for job in todos:
+for job in tqdm(todos):
     run(job)
     print(f"Size of results {len(data)}")
 
