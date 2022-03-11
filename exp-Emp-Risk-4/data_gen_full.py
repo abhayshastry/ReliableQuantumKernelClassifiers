@@ -65,7 +65,8 @@ def find_N_star(args, N_trials = 100,  delta = 0.05, bal_tol = 0.01):
     clf =  SVC(kernel='precomputed', C = C)
     clf.fit(K_train, y_train)
     f_pred_exact =  clf.decision_function(K_train).flatten()
-    margin_err = 1 - np.mean(y_train*f_pred_exact > 1.0  )
+    margin_err = 1 - np.mean(y_train*f_pred_exact > 1.0 - 1e-3  )
+    print(f"margin_err = {margin_err}")
 
     def fn1(N):
         K_N =  kernel_estimate(K_train, N)
@@ -89,7 +90,7 @@ def run(args):
     clf.fit(K_train, y_train)
     m_sv =sum(clf.n_support_)
     f_pred_exact =  clf.decision_function(K_train).flatten()
-    margin_err = 1 - np.mean(y_train*f_pred_exact > 1.0  )
+    margin_err = np.mean(y_train*f_pred_exact < 1.0 -1e-3  )
     print(f"margin_err = {margin_err}")
     if margin_err < 0.4:
         A = find_N_star(args, bal_tol = bal_tol)
@@ -122,12 +123,12 @@ kd_list = [("QAOA", "Checkerboard" ), ("Havliscek,2", "Two_Moons" ), ("Circ-Hubr
 k_list = ["Havliscek", "QAOA", "Angle", "QAOA,2", "Havliscek,2", "Angle,2"]
 #k_list = ["Havliscek" ]
 d_list = ["Two_Moons" , "Checkerboard", "SymDonuts", "Circles"]
-#d_list = ["Gen,2", "Gen,5"]
-
+#d_list = ["Gen,5"]
+ 
 indices = [
-    ('kernel, dataset', [a for a in product(k_list, d_list)]  ),
-    ('m', [40, 60, 120]),
-    ("C", [ 1, 5 ] ) ##Add optimal C as well
+    ('kernel, dataset', [a for a in product(["Angle,2"], ["Circles"])]  ),
+    ('m', [120]),
+    ("C", [ 5 ] ) ##Add optimal C as well
 ]
 
 #column_names = ['N_list', 'y_pred_list', 'y_train']
@@ -136,7 +137,7 @@ path = "data_full_new.pkl"
 
 
 t = time.time()
-rerun = False
+rerun = True
 
 if not os.path.exists(path):
     with open(path, 'w+b') as f:

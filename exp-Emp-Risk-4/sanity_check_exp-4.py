@@ -24,17 +24,20 @@ with open(path, 'rb') as f:
 N_trials = 100
 delta = 0.1
 
+key_list = [("Angle,2","Circles")]
 
 for k in data:
 
     key, m ,C = k
+    if key not in key_list:
+        continue
     V = data[k]
     f_pred = V['f_pred_exact']
     y_train = V['y_train']
     K_train = V['K_train']
     N_star = V["N_star_output"][0]
-    margin_err = 1.0 - np.mean( f_pred*y_train >= 1.0)
-    if margin_err > 0.2:
+    margin_err = 1.0 - np.mean( f_pred*y_train > 1.0 - 1e-3)
+    if margin_err > 0.2 or N_star is None:
         continue
     print( f"{k}")
     print(f"N_star_margin = {N_star}")
@@ -42,8 +45,7 @@ for k in data:
     List = []
     clf.fit(K_train, y_train)
     np.random.seed(0)
-    N = int(N_star * 1.5)
-
+    N = int(N_star)
     for _ in range(N_trials):
         K_N =  kernel_estimate(K_train, N)
         y_pred_N = np.sign( clf.decision_function(K_N).flatten())
@@ -51,7 +53,8 @@ for k in data:
 
     List = np.sort(List)
     print(f"margin_err = {margin_err}")
-    print(f" Empirical fraction (should be close to { 1- delta}): {np.mean( List < margin_err )}")
+    print(f" Empirical fraction (should be close to { 1- delta}): {np.mean( List <= margin_err )}")
+    print(f"True N_margin { N }")
     print("----------------------")
 
 
